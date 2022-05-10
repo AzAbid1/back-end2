@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ForumRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -29,6 +31,16 @@ class Forum
      * @ORM\JoinColumn(nullable=false)
      */
     private $cours;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Message::class, mappedBy="forum", orphanRemoval=true)
+     */
+    private $messages;
+
+    public function __construct()
+    {
+        $this->messages = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -56,6 +68,36 @@ class Forum
     public function setCours(Cours $cours): self
     {
         $this->cours = $cours;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): self
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages[] = $message;
+            $message->setForum($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): self
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getForum() === $this) {
+                $message->setForum(null);
+            }
+        }
 
         return $this;
     }
