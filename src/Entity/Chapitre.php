@@ -46,6 +46,12 @@ class Chapitre
      */
     private $test;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Cours::class, inversedBy="chapitres")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $cours;
+
     public function __construct()
     {
         $this->lecons = new ArrayCollection();
@@ -135,6 +141,18 @@ class Chapitre
         }
 
         $this->test = $test;
+
+        return $this;
+    }
+
+    public function getCours(): ?Cours
+    {
+        return $this->cours;
+    }
+
+    public function setCours(?Cours $cours): self
+    {
+        $this->cours = $cours;
 
         return $this;
     }

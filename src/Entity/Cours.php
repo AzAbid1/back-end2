@@ -67,9 +67,15 @@ class Cours
      */
     private $forum;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Chapitre::class, mappedBy="cours", orphanRemoval=true)
+     */
+    private $chapitres;
+
     public function __construct()
     {
         $this->apprenants = new ArrayCollection();
+        $this->chapitres = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -198,6 +204,36 @@ class Cours
         }
 
         $this->forum = $forum;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Chapitre>
+     */
+    public function getChapitres(): Collection
+    {
+        return $this->chapitres;
+    }
+
+    public function addChapitre(Chapitre $chapitre): self
+    {
+        if (!$this->chapitres->contains($chapitre)) {
+            $this->chapitres[] = $chapitre;
+            $chapitre->setCours($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChapitre(Chapitre $chapitre): self
+    {
+        if ($this->chapitres->removeElement($chapitre)) {
+            // set the owning side to null (unless already changed)
+            if ($chapitre->getCours() === $this) {
+                $chapitre->setCours(null);
+            }
+        }
 
         return $this;
     }
