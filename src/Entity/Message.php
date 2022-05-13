@@ -25,7 +25,7 @@ class Message
     private $content;
 
     /**
-     * @ORM\ManyToOne(targetEntity=forum::class, inversedBy="messages")
+     * @ORM\ManyToOne(targetEntity=Forum::class, inversedBy="messages")
      * @ORM\JoinColumn(nullable=false)
      */
     private $forum;
